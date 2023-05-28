@@ -32,7 +32,7 @@ void XuatDanhSach(REF head)
 		cout << "Danh sach rong" << endl;
 	else
 		for (p = head; p; p = p->next)
-			cout << p->key << endl;
+			cout << p->key << " ";
 }
 
 void ThemVaoCuoi(REF& head, REF& tail, int k)
@@ -78,7 +78,7 @@ void ThemVaoTaiViTri(REF& head, REF& tail, int pos, int k)
 	int n, i;
 	REF q;
 	n = length(head);
-	if ((pos < 0) || (pos > n))
+	if ((pos < 0) || (pos > n + 1))
 	{
 		cout << "Vi tri chen khong phu hop" << endl;
 		return;
@@ -86,7 +86,7 @@ void ThemVaoTaiViTri(REF& head, REF& tail, int pos, int k)
 	if (pos == 0)
 		ThemVaoDau(head, tail, k);
 	else
-		if (pos == n)
+		if (pos == n + 1)
 			ThemVaoCuoi(head, tail, k);
 		else
 		{
@@ -96,6 +96,7 @@ void ThemVaoTaiViTri(REF& head, REF& tail, int pos, int k)
 				tail = tail->next;
 		}
 }
+
 void XoaDau(REF& head, REF& tail)
 {
 	REF q;
@@ -109,6 +110,7 @@ void XoaDau(REF& head, REF& tail)
 		free(q);
 	}
 }
+
 void XoaCuoi(REF& head, REF& tail)
 {
 	REF q;
@@ -123,12 +125,14 @@ void XoaCuoi(REF& head, REF& tail)
 		q->next = NULL;
 	}
 }
+
 void XoaGiua(REF q) {
 	REF r;
 	r = q->next;
 	*q = *r;
 	free(r);
 }
+
 void XoaTaiViTri(REF &head,REF &tail, int pos)
 {
 	int n, i;
@@ -144,9 +148,59 @@ void XoaTaiViTri(REF &head,REF &tail, int pos)
 		if (pos == n - 1)
 			XoaCuoi(head, tail);
 		else {
-			for (i = 0; q = head; i < pos; i++, q = q->next);
+			for (i = 1, q = head; i < pos; i++, q = q->next);
 			if (q->next == tail)
 				tail = q;
 			XoaGiua(q);
 		}
+}
+
+void Init(stack& s)
+{
+	s.top = -1;
+}
+
+bool IsEmpty(stack s)
+{
+	if (s.top == -1) {
+		return true;
+	}
+	return false;
+}
+
+bool IsFull(stack s)
+{
+	if (s.top == MAX - 1)
+	{
+		return true;
+	}
+	return false;
+}
+
+void Push(stack& s, string x)
+{
+	if (!IsFull(s))
+	{
+		s.top++;
+		s.A[s.top] = x;
+	}
+}
+
+string Pop(stack& s)
+{
+	string temp;
+	if (!IsEmpty(s))
+	{
+		temp = s.A[s.top];
+		s.top--;
+		return temp;
+	}
+}
+
+int LayGiaTriTaiViTri(REF head, int pos) 
+{
+	REF q = NULL;
+	int i;
+	for (i = 1, q = head; i < pos; i++, q = q->next);
+	return q->key;
 }
