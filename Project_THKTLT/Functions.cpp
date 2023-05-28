@@ -211,6 +211,7 @@ void XuLiXoa(stack& s, REF& head, REF& tail, string command)
 	string reverse; // Biến này để chứa lệnh đảo ngược với command người dùng đưa vào
 	int r_pos = 0;
 	int r_val = 0;
+	// 2 biến này chứa giá trị r_pos, r_val để lát nữa đưa vô biến reverse và push vào stack undo hoặc redo
 	temp = command.substr(7, command.size() - 7); 
 	// Do lệnh delete pos ta chỉ cần lấy duy nhất giá trị pos nên ta lấy chuỗi con từ 7 (vị trí đầu tiên sau khoảng trắng)
 	// giữa delete và pos, ta lấy số lượng kí tự là từ vị trí của kí tự cuối chuỗi trừ đi 7
@@ -227,6 +228,7 @@ void XuLiThem(stack& s, REF& head, REF& tail, string command)
 	string reverse;
 	string temp;
 	int r_pos = 0;
+	// biến này chứa giá trị r_pos, để lát nữa đưa vô biến reverse và push vào stack undo hoặc redo
 	int pos = 0, val = 0;
 	int vitrikhoangtrang = 0;
 	for (int i = 7;; i++)
