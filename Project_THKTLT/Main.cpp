@@ -4,8 +4,13 @@ int main()
 {
 	REF head = NULL;
 	REF tail = NULL;
-	stack s;
-	Init(s);
+	// Khởi tạo danh sách liên kết
+	stack undo;
+	stack redo;
+	// Tạo 2 stack undo và redo
+	Init(undo);
+	Init(redo);
+	// Khởi tạo cho 2 stack trên
 	file.open("input.txt", ios::in);
 	if (file.fail())
 	{
@@ -19,9 +24,7 @@ int main()
 		ThemVaoCuoi(head, tail, temp);
 	}
 	file.close();
-	string command;
-	string temp1;
-	string reverse; // Biến này chứa command đảo ngược với command của người dùng, mục đích để phục vụ cho việc undo và redo
+	string command; // Chứa lệnh người dùng nhập vào
 	while (command != "quit")
 	{
 		cout << "LIST PROCESSING: ";
@@ -30,59 +33,21 @@ int main()
 		cout << "Command > ";
 		getline(cin, command);
 		cout << endl;
-		if (command.substr(0, 6) == "delete")
+		if (command.substr(0, 6) == "delete") // Kiểm tra có phải lệnh là delete không
 		{
-			int r_pos = 0;
-			int r_val = 0;
-			for (int i = 7;; i++)
-			{
-				if (i == command.size() - 1)
-				{
-					temp1 = command.substr(7, i);
-					int pos = stoi(temp1);
-					r_pos = pos;
-					r_val = LayGiaTriTaiViTri(head, pos);
-					XoaTaiViTri(head, tail, pos);
-					reverse = "insert " + to_string(r_pos) + " " + to_string(r_val);
-					Push(s, reverse);
-					break;
-				}
-			}
-			continue;
+			XuLiXoa(undo, head, tail, command);
 		}
-		if (command.substr(0, 6) == "insert")
+		else if (command.substr(0, 6) == "insert") // Kiểm tra có phải lệnh là insert không
 		{
-			int r_pos = 0;
-			int pos = 0, val = 0;
-			int vitrikhoangtrang = 0;
-			for (int i = 7;; i++)
-			{
-				if (i == command.size() - 1)
-				{
-					temp1 = command.substr(vitrikhoangtrang + 1, i);
-					val = stoi(temp1);
-					break;
-				}
-				else if (vitrikhoangtrang == 0)
-				{
-					if (command[i + 1] == ' ')
-					{
-						temp1 = command.substr(7, i - 7 + 1);
-						pos = stoi(temp1);
-						r_pos = pos;
-						vitrikhoangtrang = i + 1;
-					}
-					else
-						continue;
-				}
-			}
-			reverse = "delete " + to_string(r_pos);
-			Push(s, reverse);
-			ThemVaoTaiViTri(head, tail, pos, val);
+			XuLiThem(undo, head, tail, command);
 		}
-		if (command == "undo")
+		else if (command == "undo") // Kiểm tra có phải lệnh là undo không
 		{
-
+			XuLiUndo(undo, redo, head, tail);
+		}
+		else if (command == "redo") // Kiểm tra có phải lệnh là redo không
+		{
+			XuLiRedo(undo, redo, head, tail);
 		}
 	}
 	return 0;

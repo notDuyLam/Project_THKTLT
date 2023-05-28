@@ -1,4 +1,4 @@
-#include "Functions.h"
+﻿#include "Functions.h"
 
 REF KhoiTaoNode(int k)
 {
@@ -203,4 +203,80 @@ int LayGiaTriTaiViTri(REF head, int pos)
 	int i;
 	for (i = 1, q = head; i < pos; i++, q = q->next);
 	return q->key;
+}
+
+void XuLiXoa(stack& s, REF& head, REF& tail, string command)
+{
+	string temp;
+	string reverse; // Biến này để chứa lệnh đảo ngược với command người dùng đưa vào
+	int r_pos = 0;
+	int r_val = 0;
+	temp = command.substr(7, command.size() - 7); 
+	// Do lệnh delete pos ta chỉ cần lấy duy nhất giá trị pos nên ta lấy chuỗi con từ 7 (vị trí đầu tiên sau khoảng trắng)
+	// giữa delete và pos, ta lấy số lượng kí tự là từ vị trí của kí tự cuối chuỗi trừ đi 7
+	int pos = stoi(temp);
+	r_pos = pos;
+	r_val = LayGiaTriTaiViTri(head, pos);
+	XoaTaiViTri(head, tail, pos);
+	reverse = "insert " + to_string(r_pos) + " " + to_string(r_val);
+	Push(s, reverse);
+}
+
+void XuLiThem(stack& s, REF& head, REF& tail, string command)
+{
+	string reverse;
+	string temp;
+	int r_pos = 0;
+	int pos = 0, val = 0;
+	int vitrikhoangtrang = 0;
+	for (int i = 7;; i++)
+	{
+		if (i == command.size() - 1)
+		{
+			temp = command.substr(vitrikhoangtrang + 1, i);
+			val = stoi(temp);
+			break;
+		}
+		else if (vitrikhoangtrang == 0)
+		{
+			if (command[i + 1] == ' ')
+			{
+				temp = command.substr(7, i - 7 + 1);
+				pos = stoi(temp);
+				r_pos = pos;
+				vitrikhoangtrang = i + 1;
+			}
+			else
+				continue;
+		}
+	}
+	reverse = "delete " + to_string(r_pos);
+	Push(s, reverse);
+	ThemVaoTaiViTri(head, tail, pos, val);
+}
+
+void XuLiUndo(stack& undo, stack& redo, REF& head, REF& tail)
+{
+	string command = Pop(undo);
+	if (command.substr(0, 6) == "delete")
+	{
+		XuLiXoa(redo, head, tail, command);
+	}
+	else if (command.substr(0, 6) == "insert")
+	{
+		XuLiThem(redo, head, tail, command);
+	}
+}
+
+void XuLiRedo(stack& undo, stack& redo, REF& head, REF& tail)
+{
+	string command = Pop(redo);
+	if (command.substr(0, 6) == "delete")
+	{
+		XuLiXoa(undo, head, tail, command);
+	}
+	else if (command.substr(0, 6) == "insert")
+	{
+		XuLiThem(undo, head, tail, command);
+	}
 }
