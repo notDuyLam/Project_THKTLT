@@ -25,7 +25,7 @@ int main()
 	}
 	file.close();
 	string command; // Chứa lệnh người dùng nhập vào
-	while (command != "quit")
+	while (1)
 	{
 		cout << "LIST PROCESSING: ";
 		XuatDanhSach(head);
@@ -48,6 +48,23 @@ int main()
 		else if (command == "redo") // Kiểm tra có phải lệnh là redo không
 		{
 			XuLiRedo(undo, redo, head, tail);
+		}
+		else if (command == "save") // Kiểm tra có phải lệnh là saved không
+		{
+			Saved(head);
+		}
+		else if (command == "reset") // Kiểm tra có phải lệnh là reset không
+		{
+			Reset(undo, redo, head, tail);
+		}
+		else if (command == "quit") // Kiểm tra có phải lệnh là quit không
+		{
+			Quit(head);
+			break;
+		}
+		else
+		{
+			cout << "Command not found..." << endl;
 		}
 	}
 	return 0;

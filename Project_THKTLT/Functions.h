@@ -28,3 +28,7 @@ void XuLiUndo(stack& undo, stack& redo, REF& head, REF& tail);
 void XuLiRedo(stack& undo, stack& redo, REF& head, REF& tail);
 // Các hàm này tương tự nhau có truyền vào 2 tham chiếu là stack undo và redo để sau khi undo thì đưa lại vào redo và ngược
 // lại
+void Saved(REF head);
+//
+void Reset(stack& undo, stack& redo, REF& head, REF& tail);
+void Quit(REF& head);
