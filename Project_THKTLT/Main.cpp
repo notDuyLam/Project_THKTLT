@@ -66,6 +66,14 @@ int main()
 			Quit(head);
 			break;
 		}
+		else if (command == "tang") // Kiểm tra có phải lệnh là tang không
+		{
+			SapXepTang(head);
+		}
+		else if (command == "giam") // Kiểm tra có phải lệnh là giam không
+		{
+			SapXepGiam(head);
+		}
 		else
 		{
 			cout << "Command not found..." << endl;

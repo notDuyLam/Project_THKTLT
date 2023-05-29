@@ -353,3 +353,57 @@ void Quit(REF& head) {
 		delete temp;
 	}
 }
+void SapXepTang(REF& head)
+{
+	if (head == NULL || head->next == NULL)
+		return;
+	REF q = head;
+	REF a = NULL;
+	int temp;
+
+	while (q != NULL)
+	{
+		a = q->next;
+
+		while (a != NULL)
+		{
+			if (q->key > a->key)
+			{
+				temp = q->key;
+				q->key = a->key;
+				a->key = temp;
+			}
+			a = a->next;
+		}
+		q = q->next;
+	}
+	cout << "Danh sach da duoc sap xep tang dan" << endl;
+}
+
+void SapXepGiam(REF& head)
+{
+	if (head == NULL || head->next == NULL)
+		return;
+
+	REF q = head;
+	REF a = NULL;
+	int temp;
+
+	while (q != NULL)
+	{
+		a = q->next;
+
+		while (a != NULL)
+		{
+			if (q->key < a->key)
+			{
+				temp = q->key;
+				q->key = a->key;
+				a->key = temp;
+			}
+			a = a->next;
+		}
+		q = q->next;
+	}
+	cout << "Danh sach da duoc sap xep giam dan" << endl;
+}

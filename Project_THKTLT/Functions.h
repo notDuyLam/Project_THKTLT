@@ -34,3 +34,5 @@ void Reset(stack& undo, stack& redo, REF& head, REF& tail);
 // Đặt lại tất cả dữ liệu. Hàm truyền vào 2 tham chiếu stack undo và redo để xóa và khởi tạo lại ngăn xếp 
 void Quit(REF& head);
 // Giải phóng bộ nhớ và dừng chương trình
+void SapXepTang(REF& head);
+void SapXepGiam(REF& head);
