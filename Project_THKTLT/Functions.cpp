@@ -282,7 +282,7 @@ void XuLiRedo(stack& undo, stack& redo, REF& head, REF& tail)
 		XuLiThem(undo, head, tail, command);
 	}
 }
-void Saved(REF head)
+void Save(REF head)
 {
 	file.open("output.txt", ios::out);
 	if (file.fail())
@@ -296,7 +296,7 @@ void Saved(REF head)
 		file << p->key << " ";
 	}
 	file.close();
-	cout << "Numbers have been stored" << endl;
+	cout << "Numbers have been stored." << endl;
 }
 void Reset(stack& undo, stack& redo, REF& head, REF& tail)
 {
@@ -311,7 +311,6 @@ void Reset(stack& undo, stack& redo, REF& head, REF& tail)
 	tail = NULL;
 	Init(undo);
 	Init(redo);
-	system("cls");
 	file.open("input.txt", ios::in);
 	if (file.fail())
 	{

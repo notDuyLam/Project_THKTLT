@@ -25,37 +25,41 @@ int main()
 	}
 	file.close();
 	string command; // Chứa lệnh người dùng nhập vào
-	while (1)
+	while (true)
 	{
 		cout << "LIST PROCESSING: ";
 		XuatDanhSach(head);
 		cout << endl;
 		cout << "Command > ";
 		getline(cin, command);
-		cout << endl;
 		if (command.substr(0, 6) == "delete") // Kiểm tra có phải lệnh là delete không
 		{
 			XuLiXoa(undo, head, tail, command);
+			cout << endl;
 		}
 		else if (command.substr(0, 6) == "insert") // Kiểm tra có phải lệnh là insert không
 		{
 			XuLiThem(undo, head, tail, command);
+			cout << endl;
 		}
 		else if (command == "undo") // Kiểm tra có phải lệnh là undo không
 		{
 			XuLiUndo(undo, redo, head, tail);
+			cout << endl;
 		}
 		else if (command == "redo") // Kiểm tra có phải lệnh là redo không
 		{
 			XuLiRedo(undo, redo, head, tail);
+			cout << endl;
 		}
 		else if (command == "save") // Kiểm tra có phải lệnh là saved không
 		{
-			Saved(head);
+			Save(head);
 		}
 		else if (command == "reset") // Kiểm tra có phải lệnh là reset không
 		{
 			Reset(undo, redo, head, tail);
+			cout << endl;
 		}
 		else if (command == "quit") // Kiểm tra có phải lệnh là quit không
 		{
