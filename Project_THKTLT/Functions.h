@@ -29,6 +29,8 @@ void XuLiRedo(stack& undo, stack& redo, REF& head, REF& tail);
 // Các hàm này tương tự nhau có truyền vào 2 tham chiếu là stack undo và redo để sau khi undo thì đưa lại vào redo và ngược
 // lại
 void Save(REF head);
-//
+// Lưu danh sách liên kết hiện tại
 void Reset(stack& undo, stack& redo, REF& head, REF& tail);
+// Đặt lại tất cả dữ liệu. Hàm truyền vào 2 tham chiếu stack undo và redo để xóa và khởi tạo lại ngăn xếp 
 void Quit(REF& head);
+// Giải phóng bộ nhớ và dừng chương trình

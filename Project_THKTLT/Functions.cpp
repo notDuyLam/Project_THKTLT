@@ -284,12 +284,14 @@ void XuLiRedo(stack& undo, stack& redo, REF& head, REF& tail)
 }
 void Save(REF head)
 {
+	// Kiểm tra file mở được hay không
 	file.open("output.txt", ios::out);
 	if (file.fail())
 	{
 		cout << "Khong mo duoc file" << endl;
 		return;
 	}
+	// Tạo con trỏ p duyệt qua danh sách và ghi vào file
 	REF p;
 	for (p = head; p; p = p->next)
 	{
@@ -300,6 +302,7 @@ void Save(REF head)
 }
 void Reset(stack& undo, stack& redo, REF& head, REF& tail)
 {
+	// Tạo con trỏ q duyệt qua danh sách và xóa 
 	REF q = head;
 	while (q != NULL)
 	{
@@ -307,10 +310,13 @@ void Reset(stack& undo, stack& redo, REF& head, REF& tail)
 		delete q;
 		q = next;
 	}
+	// Tạo danh sách liên kết rỗng 
 	head = NULL;
 	tail = NULL;
+	// Tạo lại ngăn xếp mới 
 	Init(undo);
 	Init(redo);
+	// Mở file để đọc dữ liệu từ input
 	file.open("input.txt", ios::in);
 	if (file.fail())
 	{
@@ -326,6 +332,7 @@ void Reset(stack& undo, stack& redo, REF& head, REF& tail)
 	file.close();
 }
 void Quit(REF& head) {
+	// Lưu danh sách liên kết 
 	file.open("output.txt", ios::out);
 	if (file.fail())
 	{
@@ -338,6 +345,7 @@ void Quit(REF& head) {
 		file << p->key << " ";
 	}
 	file.close();
+	// Tạo con trỏ temp để xóa và giải phóng danh sách liên kết 
 	REF temp;
 	while (head != NULL) {
 		temp = head;
