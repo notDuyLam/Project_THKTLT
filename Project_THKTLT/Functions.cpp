@@ -139,7 +139,7 @@ void XoaTaiViTri(REF &head,REF &tail, int pos)
 	REF q;
 	n = length(head);
 	if (pos < 0 || pos >= n) {
-		cout << "Vi tri xoa khong phu hop: " << endl;
+		cout << "Vi tri xoa khong phu hop" << endl;
 		return;
 	}
 	if (pos == 0)
@@ -212,11 +212,40 @@ void XuLiXoa(stack& s, REF& head, REF& tail, string command)
 	int r_pos = 0;
 	int r_val = 0;
 	// 2 biến này chứa giá trị r_pos, r_val để lát nữa đưa vô biến reverse và push vào stack undo hoặc redo
+	int sokhoangtrang = 0;
+	for (int i = 7; i < command.size(); i++) // Vòng lặp này kiểm tra người dùng có nhập đúng định dạng delete pos hay không
+	{
+		if (command[i] == ' ') // Nếu có bất kì khoảng trắng nào trừ khoàng trắng giữa lệnh delete và giá trị pos thì tức là người dùng nhập sai
+		{
+			sokhoangtrang++;
+			if (sokhoangtrang >= 2)
+			{
+				cout << "Nhap sai" << endl;
+				return;
+			}
+		}
+		else if (command[i] < 48 || command[i] > 57) // Nếu có một kí tự khác số trong pos tức là người dùng nhập sai
+		{
+			cout << "Nhap sai" << endl;
+			return;
+		}
+	}
+	if (sokhoangtrang == 0)
+	{
+		cout << "Nhap sai" << endl;
+		return;
+	}
+	// Nếu qua được vòng lặp trên tức là người dùng nhập đúng định dạng, từ ở dưới bắt đầu xử lí
 	temp = command.substr(7, command.size() - 7); 
 	// Do lệnh delete pos ta chỉ cần lấy duy nhất giá trị pos nên ta lấy chuỗi con từ 7 (vị trí đầu tiên sau khoảng trắng)
 	// giữa delete và pos, ta lấy số lượng kí tự là từ vị trí của kí tự cuối chuỗi trừ đi 7
 	int pos = stoi(temp);
 	r_pos = pos;
+	int n = length(head);
+	if (pos < 0 || pos >= n) {
+		cout << "Vi tri xoa khong phu hop" << endl;
+		return;
+	}
 	r_val = LayGiaTriTaiViTri(head, pos);
 	XoaTaiViTri(head, tail, pos);
 	reverse = "insert " + to_string(r_pos) + " " + to_string(r_val);
@@ -231,6 +260,30 @@ void XuLiThem(stack& s, REF& head, REF& tail, string command)
 	// biến này chứa giá trị r_pos, để lát nữa đưa vô biến reverse và push vào stack undo hoặc redo
 	int pos = 0, val = 0;
 	int vitrikhoangtrang = 0;
+	int sokhoangtrang = 0;
+	for (int i = 7; i < command.size(); i++)
+	{
+		if (command[i] == ' ') // Nếu có bất kì khoảng trắng nào trừ 2 khoàng trắng giữa insert và pos, giữa pos và val thì tức là người dùng nhập sai
+		{
+			sokhoangtrang++;
+			if (sokhoangtrang >= 2)
+			{
+				cout << "Nhap sai" << endl;
+				return;
+			}
+		}
+		else if (command[i] < 48 || command[i] > 57) // Nếu có một kí tự khác số trong pos hoặc val tức là người dùng nhập sai
+		{
+			cout << "Nhap sai" << endl;
+			return;
+		}
+	}
+	if (sokhoangtrang == 0) // Ngược lại nếu như chỉ có 1 khoảng trắng giữa insert và pos thì là nhập sai
+	{
+		cout << "Nhap sai" << endl;
+		return;
+	}
+	// Nếu qua được vòng lặp trên tức là người dùng nhập đúng định dạng, từ ở dưới bắt đầu xử lí
 	for (int i = 7;; i++)
 	{
 		if (i == command.size() - 1)
@@ -268,6 +321,10 @@ void XuLiUndo(stack& undo, stack& redo, REF& head, REF& tail)
 	{
 		XuLiThem(redo, head, tail, command);
 	}
+	else if (command.substr(0, 6) == "update")
+	{
+		XuLiUpdate(redo, head, tail, command);
+	}
 }
 
 void XuLiRedo(stack& undo, stack& redo, REF& head, REF& tail)
@@ -281,7 +338,12 @@ void XuLiRedo(stack& undo, stack& redo, REF& head, REF& tail)
 	{
 		XuLiThem(undo, head, tail, command);
 	}
+	else if (command.substr(0, 6) == "update")
+	{
+		XuLiUpdate(undo, head, tail, command);
+	}
 }
+
 void Save(REF head)
 {
 	// Kiểm tra file mở được hay không
@@ -300,6 +362,7 @@ void Save(REF head)
 	file.close();
 	cout << "Numbers have been stored." << endl;
 }
+
 void Reset(stack& undo, stack& redo, REF& head, REF& tail)
 {
 	// Tạo con trỏ q duyệt qua danh sách và xóa 
@@ -331,6 +394,7 @@ void Reset(stack& undo, stack& redo, REF& head, REF& tail)
 	}
 	file.close();
 }
+
 void Quit(REF& head) {
 	// Lưu danh sách liên kết 
 	file.open("output.txt", ios::out);
@@ -353,6 +417,7 @@ void Quit(REF& head) {
 		delete temp;
 	}
 }
+
 void SapXepTang(REF& head)
 {
 	if (head == NULL || head->next == NULL)
@@ -407,3 +472,92 @@ void SapXepGiam(REF& head)
 	}
 	cout << "Danh sach da duoc sap xep giam dan" << endl;
 }
+
+void Update(REF& head, REF& tail, int pos, int k)
+{
+	int n, i;
+	REF q;
+	n = length(head);
+	if ((pos < 0) || (pos > n))
+	{
+		cout << "Vi tri cap nhat khong phu hop" << endl;
+		return;
+	}
+	if (pos == 0)
+		head->key = k;
+	else
+		if (pos == n)
+			tail->key = k;
+		else
+		{
+			for (i = 0, q = head; i < pos - 1; i++, q = q->next);
+			q->key = k;
+		}
+}
+
+void XuLiUpdate(stack& s, REF& head, REF& tail, string command)
+{
+	string reverse;
+	string temp;
+	int r_pos = 0;
+	int r_val = 0;
+	// biến này chứa giá trị r_pos và r_val, để lát nữa đưa vô biến reverse và push vào stack undo hoặc redo
+	int pos = 0, val = 0;
+	int vitrikhoangtrang = 0;
+	int sokhoangtrang = 0;
+	for (int i = 7; i < command.size(); i++)
+	{
+		if (command[i] == ' ') // Nếu có bất kì khoảng trắng nào trừ 2 khoàng trắng giữa update và pos, giữa pos và val thì tức là người dùng nhập sai
+		{
+			sokhoangtrang++;
+			if (sokhoangtrang >= 2)
+			{
+				cout << "Nhap sai" << endl;
+				return;
+			}
+		}
+		else if (command[i] < 48 || command[i] > 57) // Nếu có một kí tự khác số trong pos hoặc val tức là người dùng nhập sai
+		{
+			cout << "Nhap sai" << endl;
+			return;
+		}
+	}
+	if (sokhoangtrang == 0) // Ngược lại nếu như chỉ có 1 khoảng trắng giữa update và pos thì là nhập sai
+	{
+		cout << "Nhap sai" << endl;
+		return;
+	}
+	// Nếu qua được vòng lặp trên tức là người dùng nhập đúng định dạng, từ ở dưới bắt đầu xử lí
+	for (int i = 7;; i++)
+	{
+		if (i == command.size() - 1)
+		{
+			temp = command.substr(vitrikhoangtrang + 1, i);
+			val = stoi(temp);
+			break;
+		}
+		else if (vitrikhoangtrang == 0)
+		{
+			if (command[i + 1] == ' ')
+			{
+				temp = command.substr(7, i - 7 + 1);
+				pos = stoi(temp);
+				r_pos = pos;
+				vitrikhoangtrang = i + 1;
+			}
+			else
+				continue;
+		}
+	}
+	int n = length(head);
+	if ((pos < 0) || (pos > n))
+	{
+		cout << "Vi tri cap nhat khong phu hop" << endl;
+		return;
+	}
+	r_val = LayGiaTriTaiViTri(head, pos);
+	reverse = "update " + to_string(r_pos) + " " + to_string(r_val);
+	Push(s, reverse);
+	Update(head, tail, pos, val);
+}
+

@@ -36,3 +36,5 @@ void Quit(REF& head);
 // Giải phóng bộ nhớ và dừng chương trình
 void SapXepTang(REF& head);
 void SapXepGiam(REF& head);
+void Update(REF& head, REF& tail, int pos, int k);
+void XuLiUpdate(stack& s, REF& head, REF& tail, string command);

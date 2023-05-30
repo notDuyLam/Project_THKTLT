@@ -69,6 +69,11 @@ int main()
 		{
 			SapXepGiam(head);
 		}
+		else if (command.substr(0, 6) == "update") // Kiểm tra có phải lệnh là isort (viết tắt cho decrease sort là sắp xếp giảm dần) không
+		{
+			XuLiUpdate(undo, head, tail, command);
+			cout << endl;
+		}
 		else if (command == "quit") // Kiểm tra có phải lệnh là quit không
 		{
 			Quit(head);
