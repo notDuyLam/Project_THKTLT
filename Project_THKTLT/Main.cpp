@@ -61,17 +61,22 @@ int main()
 			Reset(undo, redo, head, tail);
 			cout << endl;
 		}
-		else if (command == "isort") // Kiểm tra có phải lệnh là isort (viết tắt cho increase sort là sắp xếp tăng dần) không
+		else if (command == "sxtang") // Kiểm tra có phải lệnh là sxtang (sắp xếp tăng dần) không
 		{
-			SapXepTang(head);
+			SapXepTang(undo, redo, head);
 		}
-		else if (command == "dsort") // Kiểm tra có phải lệnh là isort (viết tắt cho decrease sort là sắp xếp giảm dần) không
+		else if (command == "sxgiam") // Kiểm tra có phải lệnh là sxgiam (sắp xếp giảm dần) không
 		{
-			SapXepGiam(head);
+			SapXepGiam(undo, redo, head);
 		}
 		else if (command.substr(0, 6) == "update") // Kiểm tra có phải lệnh là isort (viết tắt cho decrease sort là sắp xếp giảm dần) không
 		{
 			XuLiUpdate(undo, head, tail, command);
+			cout << endl;
+		}
+		else if (command.substr(0, 8) == "xoatrung") // Kiểm tra có phải lệnh là isort (viết tắt cho decrease sort là sắp xếp giảm dần) không
+		{
+			XuLiXoaTrung(undo, redo, head, tail, command);
 			cout << endl;
 		}
 		else if (command == "quit") // Kiểm tra có phải lệnh là quit không

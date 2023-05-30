@@ -213,7 +213,7 @@ void XuLiXoa(stack& s, REF& head, REF& tail, string command)
 	int r_val = 0;
 	// 2 biến này chứa giá trị r_pos, r_val để lát nữa đưa vô biến reverse và push vào stack undo hoặc redo
 	int sokhoangtrang = 0;
-	for (int i = 7; i < command.size(); i++) // Vòng lặp này kiểm tra người dùng có nhập đúng định dạng delete pos hay không
+	for (int i = 6; i < command.size(); i++) // Vòng lặp này kiểm tra người dùng có nhập đúng định dạng delete pos hay không
 	{
 		if (command[i] == ' ') // Nếu có bất kì khoảng trắng nào trừ khoàng trắng giữa lệnh delete và giá trị pos thì tức là người dùng nhập sai
 		{
@@ -418,7 +418,7 @@ void Quit(REF& head) {
 	}
 }
 
-void SapXepTang(REF& head)
+void SapXepTang(stack& undo, stack& redo, REF& head)
 {
 	if (head == NULL || head->next == NULL)
 		return;
@@ -443,9 +443,11 @@ void SapXepTang(REF& head)
 		q = q->next;
 	}
 	cout << "Danh sach da duoc sap xep tang dan" << endl;
+	Init(undo);
+	Init(redo);
 }
 
-void SapXepGiam(REF& head)
+void SapXepGiam(stack& undo, stack& redo, REF& head)
 {
 	if (head == NULL || head->next == NULL)
 		return;
@@ -471,6 +473,8 @@ void SapXepGiam(REF& head)
 		q = q->next;
 	}
 	cout << "Danh sach da duoc sap xep giam dan" << endl;
+	Init(undo);
+	Init(redo);
 }
 
 void Update(REF& head, REF& tail, int pos, int k)
@@ -559,5 +563,74 @@ void XuLiUpdate(stack& s, REF& head, REF& tail, string command)
 	reverse = "update " + to_string(r_pos) + " " + to_string(r_val);
 	Push(s, reverse);
 	Update(head, tail, pos, val);
+}
+
+void XoaTrung(REF& head, REF& tail, int x)
+{
+	REF p = NULL;
+	bool first = true;
+	bool hoanthanh = false;
+	for (p = head;p; p = p->next)
+	{
+		if (p->key == x)
+		{
+			if (first == false)
+			{
+				while (p->key == x)
+				{
+					if (p->next == tail)
+					{
+						XoaCuoi(head, tail);
+						XoaCuoi(head, tail);
+						hoanthanh = true;
+						break;
+					}
+					else
+						XoaGiua(p);
+				}
+			}
+			else
+				first = false;
+		}
+		if (hoanthanh == true)
+			break;
+	}
+}
+
+void XuLiXoaTrung(stack& undo, stack& redo, REF& head, REF& tail, string command)
+{
+	string temp;
+	int sokhoangtrang = 0;
+	for (int i = 8; i < command.size(); i++) // Vòng lặp này kiểm tra người dùng có nhập đúng định dạng xoatrung val hay không
+	{
+		if (command[i] == ' ') // Nếu có bất kì khoảng trắng nào trừ khoàng trắng giữa lệnh delete và giá trị pos thì tức là người dùng nhập sai
+		{
+			sokhoangtrang++;
+			if (sokhoangtrang >= 2)
+			{
+				cout << "Nhap sai" << endl;
+				return;
+			}
+		}
+		else if (command[i] < 48 || command[i] > 57) // Nếu có một kí tự khác số trong pos tức là người dùng nhập sai
+		{
+			cout << "Nhap sai" << endl;
+			return;
+		}
+	}
+	if (sokhoangtrang == 0)
+	{
+		cout << "Nhap sai" << endl;
+		return;
+	}
+	// Nếu qua được vòng lặp trên tức là người dùng nhập đúng định dạng, từ ở dưới bắt đầu xử lí
+	temp = command.substr(9, command.size() - 9);
+	// Do lệnh delete pos ta chỉ cần lấy duy nhất giá trị pos nên ta lấy chuỗi con từ 7 (vị trí đầu tiên sau khoảng trắng)
+	// giữa delete và pos, ta lấy số lượng kí tự là từ vị trí của kí tự cuối chuỗi trừ đi 7
+	int val = stoi(temp);
+	int n = length(head);
+	XoaTrung(head, tail, val);
+	Init(undo);
+	Init(redo);
 }
 
