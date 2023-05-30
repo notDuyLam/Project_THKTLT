@@ -61,18 +61,18 @@ int main()
 			Reset(undo, redo, head, tail);
 			cout << endl;
 		}
+		else if (command == "isort") // Kiểm tra có phải lệnh là isort (viết tắt cho increase sort là sắp xếp tăng dần) không
+		{
+			SapXepTang(head);
+		}
+		else if (command == "dsort") // Kiểm tra có phải lệnh là isort (viết tắt cho decrease sort là sắp xếp giảm dần) không
+		{
+			SapXepGiam(head);
+		}
 		else if (command == "quit") // Kiểm tra có phải lệnh là quit không
 		{
 			Quit(head);
 			break;
-		}
-		else if (command == "tang") // Kiểm tra có phải lệnh là tang không
-		{
-			SapXepTang(head);
-		}
-		else if (command == "giam") // Kiểm tra có phải lệnh là giam không
-		{
-			SapXepGiam(head);
 		}
 		else
 		{
