@@ -699,6 +699,7 @@ void XoaTrung(REF& head, REF& tail, int x)
 void XuLiXoaTrung(stack& undo, REF& head, REF& tail, string command)
 {
 	string temp;
+	string reverse;
 	int sokhoangtrang = 0;
 	for (int i = 8; i < command.size(); i++) // Vòng lặp này kiểm tra người dùng có nhập đúng định dạng xoatrung val hay không
 	{
@@ -737,7 +738,6 @@ void XuLiXoaTrung(stack& undo, REF& head, REF& tail, string command)
 		}
 		current = current->next;
 	}
-	string reverse;
 	reverse = "xt " + to_string(val) + " " + result;
 	Push(undo, reverse);
 	XoaTrung(head, tail, val);
