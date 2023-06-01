@@ -155,6 +155,18 @@ void XoaTaiViTri(REF &head,REF &tail, int pos)
 		}
 }
 
+void destroyList(REF& head)
+{
+	REF p;
+	while (head)
+	{
+		p = head;
+		head = head->next;
+		free(p);
+	}
+}
+
+
 void Init(stack& s)
 {
 	s.top = -1;
@@ -312,6 +324,8 @@ void XuLiThem(stack& s, REF& head, REF& tail, string command)
 
 void XuLiUndo(stack& undo, stack& redo, REF& head, REF& tail)
 {
+	if (IsEmpty(undo))
+		return;
 	string command = Pop(undo);
 	if (command.substr(0, 6) == "delete")
 	{
@@ -325,10 +339,62 @@ void XuLiUndo(stack& undo, stack& redo, REF& head, REF& tail)
 	{
 		XuLiUpdate(redo, head, tail, command);
 	}
+	else // Cho các trường hợp sắp xếp tăng, giảm, xóa trùng thì sẽ đi vào đây
+	{
+		if(command.substr(0, 2) == "sg" || command.substr(0, 2) == "st")
+		{
+			string tempcommand = command.substr(3, command.size() - 3);
+			destroyList(head);
+			head = NULL;
+			tail = NULL;
+			istringstream iss(tempcommand);
+			int number;
+			while (iss >> number) {
+				ThemVaoCuoi(head, tail, number);
+			}
+			string reverse;
+			if (command.substr(0, 2) == "sg")
+			{
+				reverse = "sxgiam";
+				Push(redo, reverse);
+			}
+			else
+			{
+				reverse = "sxtang";
+				Push(redo, reverse);
+			}
+		}
+		else
+		{
+			string tempcommand = command.substr(3, command.size() - 3);
+			destroyList(head);
+			head = NULL;
+			tail = NULL;
+			istringstream iss(tempcommand);
+			int number;
+			int xtval;
+			bool firstNumber = true;
+
+			while (iss >> number) {
+				if (firstNumber) {
+					xtval = number; // Lưu số đầu tiên vào biến xtval
+					firstNumber = false;
+				}
+				else {
+					ThemVaoCuoi(head, tail, number); // Đưa các số còn lại vào danh sách liên kết
+				}
+			}
+			string reverse;
+			reverse = "xoatrung " + to_string(xtval);
+			Push(redo, reverse);
+		}
+	}
 }
 
 void XuLiRedo(stack& undo, stack& redo, REF& head, REF& tail)
 {
+	if (IsEmpty(redo))
+		return;
 	string command = Pop(redo);
 	if (command.substr(0, 6) == "delete")
 	{
@@ -341,6 +407,19 @@ void XuLiRedo(stack& undo, stack& redo, REF& head, REF& tail)
 	else if (command.substr(0, 6) == "update")
 	{
 		XuLiUpdate(undo, head, tail, command);
+	}
+	else if (command == "sxtang") // Kiểm tra có phải lệnh là sxtang (sắp xếp tăng dần) không
+	{
+		SapXepTang(undo, head);
+	}
+	else if (command == "sxgiam") // Kiểm tra có phải lệnh là sxgiam (sắp xếp giảm dần) không
+	{
+		SapXepGiam(undo, head);
+	}
+	else if (command.substr(0, 8) == "xoatrung") 
+	{
+		XuLiXoaTrung(undo, head, tail, command);
+		cout << endl;
 	}
 }
 
@@ -418,14 +497,25 @@ void Quit(REF& head) {
 	}
 }
 
-void SapXepTang(stack& undo, stack& redo, REF& head)
+void SapXepTang(stack& undo, REF& head)
 {
 	if (head == NULL || head->next == NULL)
 		return;
 	REF q = head;
 	REF a = NULL;
 	int temp;
-
+	string result;
+	REF current = head;
+	while (current != NULL) {
+		result += to_string(current->key);
+		if (current->next != NULL) {
+			result += " ";
+		}
+		current = current->next;
+	}
+	string reverse;
+	reverse = "st " + result;
+	Push(undo, reverse);
 	while (q != NULL)
 	{
 		a = q->next;
@@ -443,11 +533,10 @@ void SapXepTang(stack& undo, stack& redo, REF& head)
 		q = q->next;
 	}
 	cout << "Danh sach da duoc sap xep tang dan" << endl;
-	Init(undo);
-	Init(redo);
+
 }
 
-void SapXepGiam(stack& undo, stack& redo, REF& head)
+void SapXepGiam(stack& undo, REF& head)
 {
 	if (head == NULL || head->next == NULL)
 		return;
@@ -455,7 +544,18 @@ void SapXepGiam(stack& undo, stack& redo, REF& head)
 	REF q = head;
 	REF a = NULL;
 	int temp;
-
+	string result;
+	REF current = head;
+	while (current != NULL) {
+		result += to_string(current->key);
+		if (current->next != NULL) {
+			result += " ";
+		}
+		current = current->next;
+	}
+	string reverse;
+	reverse = "st " + result;
+	Push(undo, reverse);
 	while (q != NULL)
 	{
 		a = q->next;
@@ -473,8 +573,7 @@ void SapXepGiam(stack& undo, stack& redo, REF& head)
 		q = q->next;
 	}
 	cout << "Danh sach da duoc sap xep giam dan" << endl;
-	Init(undo);
-	Init(redo);
+
 }
 
 void Update(REF& head, REF& tail, int pos, int k)
@@ -597,7 +696,7 @@ void XoaTrung(REF& head, REF& tail, int x)
 	}
 }
 
-void XuLiXoaTrung(stack& undo, stack& redo, REF& head, REF& tail, string command)
+void XuLiXoaTrung(stack& undo, REF& head, REF& tail, string command)
 {
 	string temp;
 	int sokhoangtrang = 0;
@@ -629,8 +728,19 @@ void XuLiXoaTrung(stack& undo, stack& redo, REF& head, REF& tail, string command
 	// giữa delete và pos, ta lấy số lượng kí tự là từ vị trí của kí tự cuối chuỗi trừ đi 7
 	int val = stoi(temp);
 	int n = length(head);
+	string result;
+	REF current = head;
+	while (current != NULL) {
+		result += to_string(current->key);
+		if (current->next != NULL) {
+			result += " ";
+		}
+		current = current->next;
+	}
+	string reverse;
+	reverse = "xt " + to_string(val) + " " + result;
+	Push(undo, reverse);
 	XoaTrung(head, tail, val);
-	Init(undo);
-	Init(redo);
+
 }
 
