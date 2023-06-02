@@ -554,7 +554,7 @@ void SapXepGiam(stack& undo, REF& head)
 		current = current->next;
 	}
 	string reverse;
-	reverse = "st " + result;
+	reverse = "sg " + result;
 	Push(undo, reverse);
 	while (q != NULL)
 	{
@@ -683,6 +683,11 @@ void XoaTrung(REF& head, REF& tail, int x)
 						XoaCuoi(head, tail);
 						hoanthanh = true;
 						break;
+					}
+					else if (p == tail)
+					{
+						XoaCuoi(head, tail);
+						hoanthanh = true;
 					}
 					else
 						XoaGiua(p);
